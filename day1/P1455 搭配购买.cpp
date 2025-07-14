@@ -139,3 +139,68 @@ int main()
 //	cout << f[w] << endl;
 //	return 0;
 //}
+
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+const int N = 1e4 + 10;
+
+int n,m,w,c[N],d[N],f[N];
+
+vector<int> edges[N]; //无向图 
+
+//dfs需要st数组判断是否遍历过了，cnt统计连通块个数，cc新的价格，dd新的价值 
+bool st[N]; 
+int cnt,cc[N],dd[N];
+
+void dfs(int x)
+{
+	if(st[x]) return; 
+	
+	st[x] = true;
+	
+	cc[cnt] += c[x];
+	dd[cnt] += d[x];
+	
+	for(auto v:edges[x])
+	{
+		if(!st[v]) dfs(v);
+	}
+}
+
+int main()
+{
+	cin >> n >> m >> w;
+	
+	for(int i=1;i<=n;i++) cin >> c[i] >> d[i];
+	
+	for(int i=1;i<=m;i++) 
+	{
+		int a,b; cin >> a >> b;
+		edges[a].push_back(b);
+		edges[b].push_back(a); 
+	}
+	
+	for(int i=1;i<=n;i++)
+	{
+		if(!st[i])
+		{
+			cnt++;
+			dfs(i);
+		}
+	}
+	
+	for(int i=1;i<=n;i++)
+	{
+		for(int j=w;j>=cc[i];j--)
+		{
+			f[j] = max(f[j-cc[i]] + dd[i], f[j]);
+		}
+	}
+	
+	cout << f[w] << endl;
+	
+	return 0;
+}
