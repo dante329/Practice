@@ -1,5 +1,5 @@
 #include<iostream>
-#include<algorithm>
+#include<cmath>
 
 using namespace std;
 
@@ -32,15 +32,22 @@ int main()
 	for(int i=pre+1,j=c[pre]-d;j>=0;i++,j-=d) 
 	{
 		c[i] = j; 
+		pre = i; //循环结束后，pre会记录最大的定价（再大销量就负了） 
 	}
 	
-	double left = 1e9, right = -1e9;
-	for(int i=a,j=c[i];i<=pre;i++)
+//	for(int i=a;i<=pre;i++)
+//	{
+//		cout << i << " " << c[i] << endl; 
+//	}
+	
+	double left = -1e9, right = 1e9;
+	for(int i=a;i<=pre;i++)
 	{
-		double x = 1.0*(aim-a)*(c[aim]-(i-a)*j) / (j-c[aim]);
+		int j=c[i];
+		double x = 1.0 * ((aim-a)*c[aim]-(i-a)*j) / (j-c[aim]);
 		
-		if(j-c[aim] > 0) right = min(left,x);
-		else left = max(right,x);
+		if(j-c[aim] > 0) right = min(right,x);
+		else if(j-c[aim] < 0) left = max(left,x);
 	}
 	
 	if(left > right) cout << "NO SOLUTION" << endl;
